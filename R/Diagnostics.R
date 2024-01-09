@@ -68,7 +68,7 @@ diagnostic <- function(
     cdmDatabaseName <- attr(databaseDetails, 'cdmDatabaseName')
     checkIsClass(restrictPlpDataSettings, 'restrictPlpDataSettings')
   }
-  
+
   if(class(populationSettings) != 'list'){
     populationSettings <- list(populationSettings)
   }
@@ -96,13 +96,17 @@ diagnostic <- function(
                            names = c(cohortName,outcomeNames))
     
     newNames<- newNames[!newNames$ids%in%cohortNames$ids,]
+    ParallelLogger::logInfo('if, file.exists(file.path(outputFolder,\'namesdetails.csv\')')
     if(length(newNames$ids)>0){
+      ParallelLogger::logInfo('rbind1')
       cohortNames <- rbind(cohortNames, newNames)
+      ParallelLogger::logInfo('rbind2')
     }
-    
+
   } else {
     cohortNames <- data.frame(ids = c(cohortId,outcomeIds), 
                            names = c(cohortName,outcomeNames))
+    ParallelLogger::logInfo('else, create df')
   }
   ParallelLogger::logInfo('Saving cohort names to csv')
   utils::write.csv(cohortNames, file.path(outputFolder,'namesdetails.csv'), row.names = F)
